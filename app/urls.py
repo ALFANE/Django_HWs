@@ -17,8 +17,11 @@ from django.contrib import admin
 from django.urls import path
 
 from home.views import hello as hello_view
+from home.views import ShowAll as shwowall_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('home/', hello_view)
+    path('home/', hello_view),
+    path('showall/', shwowall_view),
+
 ]
