@@ -19,7 +19,6 @@ decorator==4.4.2
 dill==0.3.7
 distlib==0.3.6
 distro==1.7.0
-distro-info===1.1build1
 Django==4.1.4
 dodgy==0.2.1
 duplicity==0.8.21
