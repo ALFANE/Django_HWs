@@ -6,6 +6,12 @@
 </head>
 <body>
 
+<form method="POST" action="/showall/">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit">
+</form>
+
 <h1>Students List</h1>
 {% for student in students %}
 <h3>Student number:  {{student.id}}</h3>
@@ -18,6 +24,9 @@ Description:<b>{{student.description}}</b>
 Birthday:<b>{{student.birthday}}</b>
 Email:<b>{{student.email}}</b>
 {% endfor %}
+
+
+
 
 </body>
 </html>
