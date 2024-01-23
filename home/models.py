@@ -3,8 +3,8 @@ from django.db import models
 
 # Create your models here.
 
-class Student(models.Model):
 
+class Student(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=20, null=True)
     surname = models.CharField(max_length=20, null=True)
@@ -14,3 +14,4 @@ class Student(models.Model):
     description = models.CharField(max_length=100, null=True)
     birthday = models.DateField(null=True)
     email = models.EmailField(null=True)
+    social_url = models.URLField(null=True)
