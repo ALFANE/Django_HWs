@@ -28,5 +28,6 @@ class Command(BaseCommand):
             student.description = faker.text()
             student.birthday = faker.date_between(start_date="-60y", end_date="-16y")
             student.email = faker.email()
+            student.social_url = student.name + student.surname + '@mail.com'
             student.save()
         sys.stdout.write("End inserting Students \n")

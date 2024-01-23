@@ -16,12 +16,22 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from home.views import hello as hello_view
-from home.views import ShowAll as shwowall_view
+from home.views import updateStudent, ShowAll, hello, create_student, create_student_by_form
+
+from home.views_class import ShowAllView, AddNewStudentView, UpdateStudentView, AddStudentByNameView, DeleteStudentView
+
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('home/', hello_view),
-    path('showall/', shwowall_view),
+    path("admin/", admin.site.urls),
+    path("home/", hello),
+    path("students/", ShowAll, name ='student_list'),
+    path('student/update/<id>/', updateStudent, name = 'update_student'),
+    path('student/create/', create_student, name = 'student_create'),
+    path('student/form/create/', create_student_by_form, name = 'student_form_create'),
 
+    path('class/student/delete/', DeleteStudentView.as_view(), name = 'class_student_delete'),
+    path('class/students/', ShowAllView.as_view(), name = 'class_student_list'),
+    path('class/student/create/', AddStudentByNameView.as_view(), name = 'class_student_create'),
+    path('class/student/form/create/', AddNewStudentView.as_view(), name = 'class_student_form_create'),
+    path('class/student/update/<id>/', UpdateStudentView.as_view(), name = 'class_student_update')
 ]
