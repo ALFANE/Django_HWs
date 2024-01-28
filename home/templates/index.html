@@ -20,7 +20,7 @@
     name="id"
     id="id_input"
   />
-  <input type="button" value="Delete student" onclick="submitForm()" />
+  <input type="button" value="Update student" onclick="submitForm()" />
 </form>
 <script>
     var updateURL = "{% url 'class_student_update' id=0 %}";
@@ -53,6 +53,7 @@
     <h3><a href="{% url 'class_student_update' id=student.id %}"</h3>
     Name:<b>{{student.name}}</b>
     Surname:<b>{{student.surname}}</b>
+    Normalized_Name:<b>{{student.normalized_name}}</b>
     Age:<b>{{student.age}}</b>
     Gender:<b>{{student.gender}}</b>
     Address:<b>{{student.address}}</b>
@@ -60,6 +61,7 @@
     Birthday:<b>{{student.birthday}}</b>
     Email:<b>{{student.email}}</b>
     Social_URL:<b>{{student.social_url}}</b>
+    Is.Active:<b>{{student.is_active}}</b>
     </li>
 {% endfor %}
 </ul>
