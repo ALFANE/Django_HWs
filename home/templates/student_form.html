@@ -1,16 +1,57 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<h1>Add new student</h1><p></p>
-<form method="POST" action="{% url 'class_student_form_create' %}">
-    {% csrf_token %}
-    {{ form }}
-    <input type="submit">
-</form>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block title_content %}Student Add{% endblock %}
+
+{% block body_content %}
+
+    <div class="container">
+      <div class="py-5 text-center">
+        <img class="d-block mx-auto mb-4" src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
+        <h2>New Student Form</h2>
+
+      </div>
+      <form method="POST" action="{% url 'class_student_form_create' %}">
+          {% csrf_token %}
+      <div class="row">
+        <div class="col-md-8 order-md-1">
+          <h4 class="mb-3">Billing address</h4>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label>Name</label></br>
+                {{ form.name }}
+              </div>
+              <div class="col-md-6 mb-3">
+                <label>Surname</label></br>
+                {{ form.surname }}
+              </div>
+              <div class="col-md-6 mb-3">
+                <label>Age</label></br>
+                {{ form.age }}
+              </div>
+              <div class="col-md-6 mb-3">
+                <label>Gender</label></br>
+                {{ form.gender }}
+              </div>
+              <div class="col-md-6 mb-3">
+                <label>Email</label></br>
+                {{ form.email }}
+              </div>
+            </div>
+
+
+
+        </div>
+      </div>
+        <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
+      </form>
+
+      <footer class="my-5 pt-5 text-muted text-center text-small">
+        <p class="mb-1">&copy; 2024 Evgeniy company</p>
+        <ul class="list-inline">
+          <li class="list-inline-item"><a href="#">Privacy</a></li>
+          <li class="list-inline-item"><a href="#">Terms</a></li>
+          <li class="list-inline-item"><a href="#">Support</a></li>
+        </ul>
+      </footer>
+    </div>
+{% endblock %}

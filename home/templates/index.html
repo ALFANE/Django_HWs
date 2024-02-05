@@ -1,16 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title_content %}Students list{% endblock %}
+
+{% block body_content %}
+
+
 <form action="{% url 'class_student_delete' %}" method="GET">
   <input
     id="id"
     type="text"
     name="id"/>
-  <input type="submit" value="Delete student" />
+  <input type="submit" value="Delete student" class="btn btn-primary" />
 </form>
 <p></p>
 
@@ -20,7 +20,7 @@
     name="id"
     id="id_input"
   />
-  <input type="button" value="Update student" onclick="submitForm()" />
+  <input type="button" value="Update student" onclick="submitForm()" class="btn btn-primary" />
 </form>
 <script>
     var updateURL = "{% url 'class_student_update' id=0 %}";
@@ -43,30 +43,79 @@
 </script>
 <p></p>
 <form action="{% url 'class_student_form_create' %}" method="GET">
-    <input type="submit" value="Add new student">
+    <input type="submit" value="Add new student" class="btn btn-primary">
 </form>
 
-<h1>Students List</h1>
-<ul>
-{% for student in students %}
-    <li>
-    <h3><a href="{% url 'class_student_update' id=student.id %}"</h3>
-    Name:<b>{{student.name}}</b>
-    Surname:<b>{{student.surname}}</b>
-    Normalized_Name:<b>{{student.normalized_name}}</b>
-    Age:<b>{{student.age}}</b>
-    Gender:<b>{{student.gender}}</b>
-    Address:<b>{{student.address}}</b>
-    Description:<b>{{student.description}}</b>
-    Birthday:<b>{{student.birthday}}</b>
-    Email:<b>{{student.email}}</b>
-    Social_URL:<b>{{student.social_url}}</b>
-    Is.Active:<b>{{student.is_active}}</b>
-    </li>
-{% endfor %}
-</ul>
+{# comment Django template #}
+
+    <main role="main">
+      <section class="jumbotron text-center">
+        <div class="container">
+          <h1 class="jumbotron-heading">Students List</h1>
+        </div>
+      </section>
+
+      <div class="album py-5 bg-light">
+        <div class="container">
+          <div class="row">
+            {% for student in students %}
+            <div class="col-md-4">
+              <div  class="card mb-4 box-shadow" >
+                <svg class="bd-placeholder-img card-img-top"  width="100%" height="225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+                    <rect width="100%" height="100%" fill="#55595c"/>
+                    <text font-size="30px" x="50%" y="50%" fill="#eceeef" dy=".3em" text-anchor="middle" alignment-baseline="middle">
+                        {{ student.id }} {{ student.name }} {{ student.surname }}
+                    </text>
+                </svg>
+                <div class="card-body">
+
+                    Age:<b>{{student.age}}</b>
+                    Gender:<b>{{student.gender}}</b><br>
+                    Address:<b>{{student.address}}</b><br>
+                    Birthday:<b>{{student.birthday}}</b>
+                    Email:<b>{{student.email}}</b>
+                    <div class="d-flex justify-content-between align-items-center">
+                    <div class="btn-group">
+                      <input type="button" onclick="window.location.href = '{% url 'class_student_update' id=student.id %}';" class="btn btn-sm btn-outline-secondary" value="Edit"/>
+                      <input type="button" onclick="deleteStudent('{{ student.id }}')" class="btn btn-sm btn-outline-secondary" value="Delete"/>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% empty %}
+            <h1>Students list is empty</h1>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <footer class="text-muted">
+      <div class="container">
+        <p class="float-right">
+          <a href="#">Back to top</a>
+        </p>
+        <p>Album example is &copy; Bootstrap, but please download and customize it for yourself!</p>
+        <p>New to Bootstrap? <a href="../../">Visit the homepage</a> or read our <a href="../../getting-started/">getting started guide</a>.</p>
+      </div>
+    </footer>
+
+    <script>
+    function deleteStudent(studentId) {
+        var deleteUrl = '{% url 'class_student_delete' %}?id=' + studentId;
+        window.location.href = deleteUrl;
+    }
+    </script>
+    <!-- Bootstrap core JavaScript
+<!--    ================================================== &ndash;&gt;-->
+<!--    &lt;!&ndash; Placed at the end of the document so the pages load faster &ndash;&gt;-->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    <script src="../../assets/js/vendor/popper.min.js"></script>
+    <script src="../../dist/js/bootstrap.min.js"></script>
+    <script src="../../assets/js/vendor/holder.min.js"></script>
 
 
-
-</body>
-</html>
+{% endblock %}
