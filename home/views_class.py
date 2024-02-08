@@ -3,6 +3,9 @@ from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.urls import reverse
+
+from app.celery import test_task_celery
+from home.tasks import test_task_celery2, compile_task
 from home.models import Student
 from home.forms import StudentForm
 
@@ -10,6 +13,11 @@ from home.forms import StudentForm
 class ShowAllView(View):
 
     def get(self, request):
+
+        test_task_celery.delay()
+        test_task_celery2.delay()
+        compile_task.delay()
+
         students = Student.objects.all()
         # stdent_form = StudentForm('id')
         context = {
