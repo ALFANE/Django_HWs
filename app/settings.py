@@ -143,3 +143,6 @@ LOGGING = {
         'level': 'INFO',  # Уровень логирования INFO и выше
     },
 }
+
+CELERY_BROKER_URL = 'amqp://localhost'
+CELERY_RESULT_BACKEND = 'rpc://localhost'
