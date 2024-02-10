@@ -1,16 +1,12 @@
+from faker import Faker
 from gender_guesser.detector import Detector
 
+faker = Faker()
+# faker.add_provider("faker.providers.job")
 
-def get_gender(name):
-    d = Detector()
-    gender = d.get_gender(name)
-
-    if gender == "unknown":
-        print(f"Unable to determine the gender of {name}.")
-    else:
-        print(f"The gender of {name} is {gender}.")
-
+a = []
+for i in range(10):
+    a.append(faker.name())
 
 # Пример использования
-get_gender("John")
-get_gender("Maria")
+print(a)
