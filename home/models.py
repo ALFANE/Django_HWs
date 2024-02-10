@@ -5,7 +5,7 @@ from django.db import models
 
 
 class Student(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=20, null=True)
     surname = models.CharField(max_length=20, null=True)
     normalized_name = models.CharField(max_length=50, null=True)
@@ -17,4 +17,19 @@ class Student(models.Model):
     email = models.EmailField(null=True)
     social_url = models.URLField(null=True)
     is_active = models.CharField(max_length=20, null=True)
+    subject = models.ForeignKey('home.Subject', on_delete=models.SET_NULL, null=True) #одиин ко многим
+    book = models.OneToOneField('home.Book', on_delete=models.CASCADE, null=True) #один к одному
+
+class Subject(models.Model):
+    id = models.AutoField(primary_key=True)
+    title = models.CharField(max_length=200)
+
+class Book(models.Model):
+    id = models.AutoField(primary_key=True)
+    title = models.CharField(max_length=200)
+
+class Teacher(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+    students = models.ManyToManyField('home.Student') #многие ко многим
 
