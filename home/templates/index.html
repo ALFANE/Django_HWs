@@ -42,9 +42,31 @@
     }
 </script>
 <p></p>
-<form action="{% url 'class_student_form_create' %}" method="GET">
-    <input type="submit" value="Add new student" class="btn btn-primary">
+
+<form id="{% url 'class_student_list' %}" method="GET">
+    {% csrf_token %}
+  <input type="text" name="teacher_name"/>
+  <input type="submit" value="Filter on teacher"  class="btn btn-primary" />
 </form>
+<p></p>
+
+<form id="{% url 'class_student_list' %}" method="GET">
+{% csrf_token %}
+  <input type="text" name="subject_name"/>
+  <input type="submit" value="Filter on subject"  class="btn btn-primary" />
+</form>
+<p></p>
+
+<form id="{% url 'class_student_list' %}" method="GET">
+{% csrf_token %}
+  <input type="text" name="book_number"/>
+  <input type="submit" value="Filter on book"  class="btn btn-primary" />
+</form>
+<p></p>
+
+<input type="button" onclick="window.location.href = '{% url 'class_student_form_create' %}';" class="btn btn-primary" value="Add new student"/>
+<input type="button" onclick="window.location.href = '{% url 'class_student_list' %}';" class="btn btn-primary" value="All Students"/>
+
 
 {# comment Django template #}
 
@@ -72,7 +94,10 @@
                     Age:<b>{{student.age}}</b>
                     Gender:<b>{{student.gender}}</b><br>
                     Subject:<b>{{student.subject.title}}</b><br>
-                    Teacher:<b>{{</b>
+                    Book:<b>{{student.book.title}}</b><br>
+                    {% for teacher in student.teachers.all %}
+                        Teacher:<b>{{teacher.name}}</b><br>
+                    {% endfor %}
                     Address:<b>{{student.address}}</b><br>
                     Birthday:<b>{{student.birthday}}</b>
                     Email:<b>{{student.email}}</b>
@@ -108,14 +133,10 @@
         window.location.href = deleteUrl;
     }
     </script>
-    <!-- Bootstrap core JavaScript
-<!--    ================================================== &ndash;&gt;-->
+<!--     Bootstrap core JavaScript-->
+<!-- ================================================== &ndash;&gt;-->
 <!--    &lt;!&ndash; Placed at the end of the document so the pages load faster &ndash;&gt;-->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
-    <script src="../../assets/js/vendor/popper.min.js"></script>
-    <script src="../../dist/js/bootstrap.min.js"></script>
-    <script src="../../assets/js/vendor/holder.min.js"></script>
+
 
 
 {% endblock %}

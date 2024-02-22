@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title_content %}Subjects list{% endblock %}
+
+{% block body_content %}
+
+
+{# comment Django template #}
+
+    {% for teacher in teachers %}
+
+    <nav class="navbar navbar-expand navbar-dark bg-dark">
+      <div class="navbar-brand" >Teacher: {{ teacher.name }}</div>
+      {% for student in teacher.students.all %}
+        <div class="navbar-brand" >Student: {{ student.name }} {{ student.surname }}</div>
+      {% endfor %}
+
+
+      <div class="collapse navbar-collapse" >
+        <ul class="navbar-nav mr-auto">
+        </ul>
+        <div class="btn-group">
+          <input type="button" onclick="window.location.href = '{% url 'class_teacher_update' id=teacher.id %}';" class="btn btn-sm btn-outline-secondary" value="Edit"/>
+          <input type="button" onclick="deleteTeacher('{{ teacher.id }}')" class="btn btn-sm btn-outline-secondary" value="Delete"/>
+        </div>
+      </div>
+    </nav>
+    {% endfor %}
+
+
+    <footer class="text-muted">
+      <div class="container">
+        <h3><p style="text-align: center;">
+          <a href="#">Back to top</a>
+        </p></h3>
+      </div>
+    </footer>
+
+    <script>
+    function deleteTeacher(teacherId) {
+        var deleteUrl = '{% url 'class_teacher_delete' %}?id=' + teacherId;
+        window.location.href = deleteUrl;
+    }
+    </script>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    <script src="../../assets/js/vendor/popper.min.js"></script>
+    <script src="../../dist/js/bootstrap.min.js"></script>
+
+
+
+{% endblock %}
