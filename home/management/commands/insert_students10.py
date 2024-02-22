@@ -25,10 +25,7 @@ class Command(BaseCommand):
             book.save()
 
             subject, _ = Subject.objects.get_or_create(title=faker.job())
-            # subject, _ = Subject.objects.get_or_create(title='Hillel')
-            # subject, _ = Subject.objects.get_or_create(title='Python')
-
-            subject.save()
+            subject.save() 
 
             student = Student()
             student.name = faker.first_name()

@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title_content %}Subject Update{% endblock %}
+
+{% block body_content %}
+
+    <div class="container">
+      <div class="py-5 text-center">
+        <img class="d-block mx-auto mb-4" src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
+        <h2>Subject Update Form</h2>
+
+      </div>
+      <form method="POST" action="{% url 'class_teacher_update' id=teacher.id %}">
+          {% csrf_token %}
+      <div class="row">
+        <div class="col-md-8 order-md-1">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label>Subject</label></br>
+                {{ teacher.id }} {{ form.name }}
+              </div>
+            </div>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-lg btn-block" type="submit">Change Subject Name</button>
+      </form>
+      </br>
+
+      <div class="row">
+        <div class="col-md-8 order-md-1">
+
+            <div class="row">
+
+              {% for student in teacher.students.all %}
+                <div class="col-md-6 mb-3">
+                    <b><label>Student</label></b></br>
+                    {{ student.id }} {{ student.name }} {{ student.surname }}
+                </div>
+                <input type="button" onclick="deleteStudent('{{ student.id }}', '{{ teacher.id }}' )" class="btn btn-primary" value="Delete"/>
+              {% endfor %}
+                <div class="col-md-6 mb-3">
+                <b><label>Add new Student(Student ID)</label></b></br>
+                <form action="{% url 'add_student_to_teacher' %}" method="POST">
+                  {% csrf_token %}
+                  <input type="hidden" name="teacher_id" value="{{ teacher.id }}">
+                  <input type="text" name="student_id"/>
+                  <input type="submit" value="Add student" class="btn btn-primary" />
+                </form>
+                </div>
+            </div>
+        </div>
+      </div>
+
+
+
+      <footer class="my-5 pt-5 text-muted text-center text-small">
+        <p class="mb-1">&copy; 2024 Evgeniy company</p>
+        <ul class="list-inline">
+          <li class="list-inline-item"><a href="#">Privacy</a></li>
+          <li class="list-inline-item"><a href="#">Terms</a></li>
+          <li class="list-inline-item"><a href="#">Support</a></li>
+        </ul>
+      </footer>
+    </div>
+    <script>
+    function deleteStudent(studentId, teacherId) {
+        var deleteUrl = '{% url 'delete_student_from_teacher' %}?student_id=' + studentId + '&teacher_id=' + teacherId;
+        window.location.href = deleteUrl;
+    }
+    </script>
+
+
+{% endblock %}

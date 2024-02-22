@@ -6,29 +6,76 @@ from django.urls import reverse
 
 from app.celery import test_task_celery
 from home.tasks import test_task_celery2, compile_task
-from home.models import Student
-from home.forms import StudentForm
+from home.models import Student, Book, Subject, Teacher
+from home.forms import StudentForm, BookForm, SubjectForm, TeacherForm
 
 
 class ShowAllView(View):
 
     def get(self, request):
 
-        test_task_celery.delay()
-        test_task_celery2.delay()
-        compile_task.delay()
+        # test_task_celery.delay()
+        # test_task_celery2.delay()
+        # compile_task.delay()
 
-        students = Student.objects.all()
-        # stdent_form = StudentForm('id')
-        context = {
-            "students": students,
-            # 'form': stdent_form,
-        }
-        return render(
-            request=request,
-            template_name="index.html",
-            context=context
-        )
+        if request.GET.get('teacher_name'):
+
+            teacher_name = request.GET.get('teacher_name')
+            students = Student.objects.filter(teachers__name=teacher_name)
+            context = {
+                'students': students,
+            }
+
+            return render(
+                request=request,
+                template_name="index.html",
+                context=context
+            )
+
+        elif request.GET.get('subject_name'):
+
+            subject_name = request.GET.get('subject_name')
+            students = Student.objects.filter(subject__title=subject_name)
+            context = {
+                "students": students,
+            }
+
+            return render(
+                request=request,
+                template_name="index.html",
+                context=context
+            )
+
+        elif request.GET.get('book_number'):
+
+            book_number = request.GET.get('book_number')
+            students = Student.objects.filter(book__title=book_number)
+            print(students)
+            context = {
+                "students": students,
+            }
+
+            return render(
+                request=request,
+                template_name="index.html",
+                context=context
+            )
+
+        else:
+
+            students = Student.objects.all()
+            # filter = Student.objects.filter(name='Mary')
+            # print(filter)
+
+            context = {
+                "students": students,
+            }
+
+            return render(
+                request=request,
+                template_name="index.html",
+                context=context
+            )
 
 
 class AddStudentByNameView(View):
@@ -105,6 +152,216 @@ class UpdateStudentView(View):
             student_form.save()
 
         return redirect(reverse('class_student_list'))
+
+class ShowBookView(View):
+
+    def get(self, request):
+
+
+        books = Book.objects.all()
+
+        context = {
+            "books": books,
+
+        }
+        return render(
+            request=request,
+            template_name="book_list.html",
+            context=context
+        )
+
+class BookDeleteView(View):
+
+    def get(self, request):
+
+        book_id = request.GET.get('id')
+        if not book_id:
+            return HttpResponse('Missing book id')
+        book = Book.objects.get(id=book_id)
+        book.delete()
+
+        return redirect(reverse('class_books_list'))
+
+class BookUpdateView(View):
+
+    def get(self, request, id):
+
+        book = get_object_or_404(Book, id=id)
+        book_form = BookForm(instance=book)
+        context = {
+            'form': book_form,
+            'book': book,
+        }
+        return render(
+            request = request,
+            template_name = 'book_update.html',
+            context = context
+        )
+
+    def post(self, request, id):
+
+        book = get_object_or_404(Book, id=id)
+        book_form = BookForm(request.POST, instance=book)
+        if book_form.is_valid():
+            book_form.save()
+
+        return redirect(reverse('class_books_list'))
+
+class ShowSubjectView(View):
+
+    def get(self, request):
+
+        subjects = Subject.objects.all()
+        context = {
+            'subjects': subjects,
+        }
+
+        return render(
+            request = request,
+            template_name = 'subject_list.html',
+            context = context
+        )
+
+class SubjectDeleteView(View):
+
+    def get(self, request):
+
+        subject_id = request.GET.get('id')
+        if not subject_id:
+            return HttpResponse('Missing subject id')
+        subject = Subject.objects.get(id=subject_id)
+        subject.delete()
+
+        return redirect(reverse('class_subjects_list'))
+
+class SubjectUpdateView(View):
+
+    def get(self, request, id):
+
+        subject = get_object_or_404(Subject, id=id)
+        subject_form = SubjectForm(instance=subject)
+        context = {
+            'form': subject_form,
+            'subject': subject,
+        }
+
+        return render(
+            request = request,
+            template_name = 'subject_update.html',
+            context = context
+        )
+    def post(self, request, id):
+
+        subject = get_object_or_404(Subject, id=id)
+        subject_form = SubjectForm(request.POST, instance=subject)
+        if subject_form.is_valid():
+            subject_form.save()
+
+        return redirect(reverse('class_subjects_list'))
+
+class DeleteStudentFromSubjectView(View):
+    def get(self,request):
+
+        student_id = request.GET.get('id')
+        student = Student.objects.get(id=student_id)
+        subject_id = student.subject.id
+        student.subject = None
+        student.save()
+
+        return redirect(reverse('class_subject_update', kwargs={'id': subject_id}), request_method = 'GET')
+
+class AddStudentToSubjectView(View):
+
+    def get(self, request, subject_id):
+
+        student_id = request.GET.get('id')
+        if not student_id:
+            return HttpResponse('Missing student id')
+        subject = get_object_or_404(Subject, id=subject_id)
+        student = Student.objects.get(id=student_id)
+        student.subject = subject
+        student.save()
+
+        return redirect(reverse('class_subject_update', kwargs={'id': subject_id}))
+
+class ShowTeacherView(View):
+
+    def get(self, request):
+
+        teachers = Teacher.objects.all()
+        context = {
+            'teachers': teachers,
+        }
+
+        return render(
+            request=request,
+            template_name='teacher_list.html',
+            context=context
+        )
+
+class DeleteTeacherView(View):
+
+    def get(self, request):
+
+        teacher_id = request.GET.get('id')
+        if not teacher_id:
+            return HttpResponse('Missing teahcer ID')
+        teacher = Teacher.objects.get(id=teacher_id)
+        teacher.delete()
+
+        return redirect(reverse('class_teachers_list'))
+
+class UpdateTeacherView(View):
+
+    def get(self, request, id):
+
+        teacher = get_object_or_404(Teacher, id=id)
+        teacher_form = TeacherForm(instance=teacher)
+        context = {
+            'form': teacher_form,
+            'teacher': teacher,
+        }
+
+        return render(
+            request=request,
+            template_name='teacher_update.html',
+            context=context
+        )
+
+    def post(self, request, id):
+
+        teacher = get_object_or_404(Teacher, id=id)
+        teacher_form = TeacherForm(request.POST, instance=teacher)
+        if teacher_form.is_valid():
+            teacher_form.save()
+
+        return redirect(reverse('class_teachers_list'))
+
+class DeleteStudentFromTeacher(View):
+
+    def get(self, request):
+
+        student_id = request.GET.get('student_id')
+        teacher_id = request.GET.get('teacher_id')
+        student = Student.objects.get(id=student_id)
+        teacher = Teacher.objects.get(id=teacher_id)
+        teacher.students.remove(student)
+
+        return redirect(reverse('class_teacher_update', kwargs={'id': teacher_id}))
+
+class AddStudentToTeacher(View):
+
+    def post(self, request):
+
+        teacher_id = request.POST.get('teacher_id')
+        student_id = request.POST.get('student_id')
+        if not student_id:
+            return HttpResponse('Missing Stident ID')
+        teacher = get_object_or_404(Teacher, id=teacher_id)
+        student = Student.objects.get(id=student_id)
+        teacher.students.add(student)
+
+        return redirect(reverse('class_teacher_update', kwargs={'id': teacher_id}))
 
 
 

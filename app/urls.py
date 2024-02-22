@@ -18,8 +18,10 @@ from django.urls import path
 
 from home.views import updateStudent, ShowAll, hello, create_student, create_student_by_form
 
-from home.views_class import ShowAllView, AddNewStudentView, UpdateStudentView, AddStudentByNameView, DeleteStudentView
-
+from home.views_class import ShowAllView, AddNewStudentView, UpdateStudentView, AddStudentByNameView, DeleteStudentView, \
+    ShowBookView, BookDeleteView, BookUpdateView, ShowSubjectView, SubjectDeleteView, SubjectUpdateView, \
+    DeleteStudentFromSubjectView, AddStudentToSubjectView, ShowTeacherView, DeleteTeacherView, UpdateTeacherView, \
+    DeleteStudentFromTeacher, AddStudentToTeacher
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -33,5 +35,22 @@ urlpatterns = [
     path('class/students/', ShowAllView.as_view(), name = 'class_student_list'),
     path('class/student/create/', AddStudentByNameView.as_view(), name = 'class_student_create'),
     path('class/student/form/create/', AddNewStudentView.as_view(), name = 'class_student_form_create'),
-    path('class/student/update/<id>/', UpdateStudentView.as_view(), name = 'class_student_update')
+    path('class/student/update/<id>/', UpdateStudentView.as_view(), name = 'class_student_update'),
+
+    path('class/books/', ShowBookView.as_view(), name = 'class_books_list'),
+    path('class/book/delete/', BookDeleteView.as_view(), name = 'class_book_delete'),
+    path('class/book/update/<id>/', BookUpdateView.as_view(), name = 'class_book_update'),
+
+    path('class/subjects/', ShowSubjectView.as_view(), name = 'class_subjects_list'),
+    path('class/subject/delete/', SubjectDeleteView.as_view(), name = 'class_subject_delete'),
+    path('class/subject/update/<id>/', SubjectUpdateView.as_view(), name = 'class_subject_update'),
+    path('class/subject_student/delete/', DeleteStudentFromSubjectView.as_view(), name = 'delete_student_from_subject'),
+    path('class/subject_student/add/<subject_id>/', AddStudentToSubjectView.as_view(), name = 'add_student_to_subject'),
+
+    path('class/teachers/', ShowTeacherView.as_view(), name = 'class_teachers_list'),
+    path('class/teacher/delete/', DeleteTeacherView.as_view(), name = 'class_teacher_delete'),
+    path('class/teacher/update/<id>/', UpdateTeacherView.as_view(), name = 'class_teacher_update'),
+    path('class/teacher_student/delete/', DeleteStudentFromTeacher.as_view(), name = 'delete_student_from_teacher'),
+    path('class/teacher_student/add/', AddStudentToTeacher.as_view() , name = 'add_student_to_teacher')
+
 ]

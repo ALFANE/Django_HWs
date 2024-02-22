@@ -17,8 +17,20 @@ class Student(models.Model):
     email = models.EmailField(null=True)
     social_url = models.URLField(null=True)
     is_active = models.CharField(max_length=20, null=True)
-    subject = models.ForeignKey('home.Subject', on_delete=models.SET_NULL, null=True) #одиин ко многим
-    book = models.OneToOneField('home.Book', on_delete=models.CASCADE, null=True) #один к одному
+    subject = models.ForeignKey(
+        to = 'home.Subject',
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name = 'students', # позволяет изменять имя для обратного обращение к модели с student_set (modelname_set) на students
+        related_query_name = 'students', # позволяет изменять имя для обратной связи к модели в запросе с student на students
+    ) #одиин ко многим
+    book = models.OneToOneField(
+        to = 'home.Book',
+        on_delete=models.CASCADE,
+        null=True,
+        related_name = 'student',
+        related_query_name = 'student'
+    ) #один к одному
 
 class Subject(models.Model):
     id = models.AutoField(primary_key=True)
@@ -31,5 +43,9 @@ class Book(models.Model):
 class Teacher(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
-    students = models.ManyToManyField('home.Student') #многие ко многим
+    students = models.ManyToManyField(
+        to = 'home.Student',
+        related_name = 'teachers',
+        related_query_name = 'teachers'
+    ) #многие ко многим
 
