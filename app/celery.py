@@ -9,7 +9,7 @@ app = Celery('Django', include=[])
 app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks()
 
-@app.task(bind=True, name='celery_test' """, queue='test'""")
+@app.task(bind=True, name='celery_test', queue='test')
 def test_task_celery(self):
     sleep(3)
     print('Celery Test')

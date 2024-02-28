@@ -49,3 +49,8 @@ class Teacher(models.Model):
         related_query_name = 'teachers'
     ) #многие ко многим
 
+class Currency(models.Model):
+    id = models.AutoField(primary_key=True)
+    ccy = models.CharField(max_length=30, null=True)
+    buy = models.FloatField(null=True)
+    sale = models.FloatField(null=True)

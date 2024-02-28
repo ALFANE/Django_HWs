@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 
+from celery.schedules import crontab
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -113,7 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Europe/Kyiv"
 
 USE_I18N = True
 
@@ -146,4 +148,19 @@ LOGGING = {
 }
 
 CELERY_BROKER_URL = 'amqp://localhost'
-CELERY_RESULT_BACKEND = 'rpc://localhost'
+CELERY_RESULT_BACKEND = 'db+sqlite:///celery_results.sqlite3'
+
+CELERY_BEAT_SCHEDULE = {
+    'night_task': {
+        'task': 'home.tasks.night_and_morning',
+        'schedule': crontab(hour=0),
+        'args': (),
+    },
+
+    'morning_task': {
+        'task': 'home.tasks.night_and_morning',
+        'schedule': crontab(hour=8),
+        'args': (),
+    },
+
+}
