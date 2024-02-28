@@ -14,9 +14,9 @@ class ShowAllView(View):
 
     def get(self, request):
 
-        # test_task_celery.delay()
-        # test_task_celery2.delay()
-        # compile_task.delay()
+        test_task_celery.delay()
+        test_task_celery2.delay()
+        compile_task.delay()
 
         if request.GET.get('teacher_name'):
 
