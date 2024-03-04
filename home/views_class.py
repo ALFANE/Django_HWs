@@ -1,7 +1,10 @@
+import csv
+
 import requests
+from django.forms import model_to_dict
 from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse, FileResponse
 from django.urls import reverse
 
 from app.celery import test_task_celery
@@ -69,6 +72,7 @@ class ShowAllView(View):
 
             context = {
                 "students": students,
+                'string': 'Test string'
             }
 
             return render(
@@ -77,6 +81,59 @@ class ShowAllView(View):
                 context=context
             )
 
+class CSVView(View):
+    def get(self, request):
+
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = "attachment; filename=data_students.csv"
+        writer_for_response = csv.writer(response)
+        writer_for_response.writerow(["Name", "Surname", "Subject", "Book"])
+
+        students = Student.objects.all()
+        for student in students:
+            writer_for_response.writerow([
+                student.name,
+                student.surname,
+                student.subject.title if student.subject else None,
+                student.book.title if student.subject else None,
+            ])
+
+        return response
+class JSONView(View):
+    def get(self, request):
+
+        student = Student.objects.first()
+        students = Student.objects.all()
+
+        return JsonResponse({
+            "student": model_to_dict(student),
+            "students": list(students.values(
+                "name",
+                "surname",
+                "age",
+                "gender",
+                "subject__title",
+                "book__title",
+            )),
+        })
+class FileView(View):
+    def get(self, request):
+
+        with open('pyproject.toml') as file:
+            read_file = file.read()
+
+            response = FileResponse(read_file)
+            response['Content-Disposition'] = "attachment; filename={}".format(file.name)
+
+            return response
+class XMLView(View):
+    def get(self, request):
+        with open('test_xml.xml') as file:
+            read_file = file.read()
+            response = FileResponse(read_file)
+            response['Content-Type'] = 'text/xml'
+
+            return response
 
 class AddStudentByNameView(View):
 

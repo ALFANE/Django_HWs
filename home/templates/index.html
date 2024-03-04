@@ -1,9 +1,12 @@
 {% extends 'base.html' %}
 
+{% load poll_extras %}
+
 {% block title_content %}Students list{% endblock %}
 
 {% block body_content %}
 
+<h1>{{ string|addition_cut }}</h1>
 
 <form action="{% url 'class_student_delete' %}" method="GET">
   <input
