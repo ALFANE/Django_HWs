@@ -21,7 +21,7 @@ from home.views import updateStudent, ShowAll, hello, create_student, create_stu
 from home.views_class import ShowAllView, AddNewStudentView, UpdateStudentView, AddStudentByNameView, DeleteStudentView, \
     ShowBookView, BookDeleteView, BookUpdateView, ShowSubjectView, SubjectDeleteView, SubjectUpdateView, \
     DeleteStudentFromSubjectView, AddStudentToSubjectView, ShowTeacherView, DeleteTeacherView, UpdateTeacherView, \
-    DeleteStudentFromTeacher, AddStudentToTeacher
+    DeleteStudentFromTeacher, AddStudentToTeacher, XMLView, JSONView, CSVView, FileView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -51,6 +51,11 @@ urlpatterns = [
     path('class/teacher/delete/', DeleteTeacherView.as_view(), name = 'class_teacher_delete'),
     path('class/teacher/update/<id>/', UpdateTeacherView.as_view(), name = 'class_teacher_update'),
     path('class/teacher_student/delete/', DeleteStudentFromTeacher.as_view(), name = 'delete_student_from_teacher'),
-    path('class/teacher_student/add/', AddStudentToTeacher.as_view() , name = 'add_student_to_teacher')
+    path('class/teacher_student/add/', AddStudentToTeacher.as_view() , name = 'add_student_to_teacher'),
+
+    path('json_view', JSONView.as_view(), name = 'json_view'),
+    path('csv_view', CSVView.as_view(), name = 'csv_view'),
+    path('xml_view', XMLView.as_view(), name = 'xml_view'),
+    path('file_view', FileView.as_view(), name = 'file_view'),
 
 ]
