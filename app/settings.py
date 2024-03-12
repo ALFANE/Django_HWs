@@ -91,6 +91,15 @@ DATABASES = {
 }
 
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/1',
+    }
+}
+
+CACHE_TTL = 60*15  #Время которое будет хранится кэш, записывается числами в секундах здесь 15 минут = 60 секунд умноженое на 15
+
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 

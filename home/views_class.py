@@ -1,11 +1,15 @@
 import csv
+from time import sleep
 
-import requests
+from django.conf import settings
+from django.core.cache import cache
 from django.forms import model_to_dict
+from django.utils.decorators import method_decorator
 from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse, FileResponse
 from django.urls import reverse, reverse_lazy
+from django.views.decorators.cache import cache_page
 from django.views.generic import ListView, CreateView, UpdateView
 
 from app.celery import test_task_celery
@@ -14,7 +18,7 @@ from home.tasks import test_task_celery2, compile_task
 from home.models import Student, Book, Subject, Teacher
 from home.forms import StudentForm, BookForm, SubjectForm, TeacherForm
 
-
+@method_decorator(cache_page(settings.CACHE_TTL), name='dispatch')
 class ShowAllView(View):
 
     def get(self, request):
@@ -22,6 +26,8 @@ class ShowAllView(View):
         test_task_celery.delay()
         test_task_celery2.delay()
         compile_task.delay()
+
+        # sleep(10)
 
         if request.GET.get('teacher_name'):
 
@@ -68,13 +74,23 @@ class ShowAllView(View):
 
         else:
 
-            students = Student.objects.all()
-            # filter = Student.objects.filter(name='Mary')
-            # print(filter)
+            # В основном для кеширование используют вилку
+            # проверяя есть ли значение в кэше и если есть,
+            # то взять если нет то сохранить и взять
+            # cache_value = cache.get('some_key')
+            # if not cache_value:
+            #     cache_value = "Cached value"
+            #     cache.set('some_key', cache_value)
+
+            students = Student.objects.\
+                select_related('book', 'subject').\
+                prefetch_related('teachers').all()
+
 
             context = {
                 "students": students,
-                'string': 'Test string'
+                'string': 'Test string',
+                # 'cached_value': cache_value,
             }
 
             return render(
