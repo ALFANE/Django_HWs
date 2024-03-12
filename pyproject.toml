@@ -14,6 +14,7 @@ flower = "^2.0.1"
 django-extensions = "^3.2.3"
 sqlalchemy = "^2.0.27"
 requests = "^2.31.0"
+django-redis = "^5.4.0"
 
 
 [tool.poetry.group.dev.dependencies]
