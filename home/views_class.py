@@ -5,9 +5,11 @@ from django.forms import model_to_dict
 from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse, FileResponse
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
+from django.views.generic import ListView, CreateView, UpdateView
 
 from app.celery import test_task_celery
+from home.emails import send_email
 from home.tasks import test_task_celery2, compile_task
 from home.models import Student, Book, Subject, Teacher
 from home.forms import StudentForm, BookForm, SubjectForm, TeacherForm
@@ -149,28 +151,13 @@ class AddStudentByNameView(View):
 
         return HttpResponse('Student {} have been created'.format(student.name))
 
-class AddNewStudentView(View):
+class AddNewStudentView(CreateView):
 
-    def get(self, request):
+    model = Student
+    fields = ['name', 'surname', 'age', 'gender', 'email']
+    template_name = 'student_form.html'
+    success_url = reverse_lazy('class_student_list')
 
-        student_form = StudentForm()
-        context = {
-            'form': student_form,
-        }
-
-        return render(
-            request=request,
-            template_name='student_form.html',
-            context = context,
-        )
-
-    def post(self, request):
-
-        student_form = StudentForm(request.POST)
-        if student_form.is_valid():
-            student_form.save()
-
-        return redirect(reverse('class_student_list'))
 
 class DeleteStudentView(View):
 
@@ -184,48 +171,17 @@ class DeleteStudentView(View):
 
         return redirect(reverse('class_student_list'))
 
-class UpdateStudentView(View):
+class UpdateStudentView(UpdateView):
 
-    def get(self, request, id):
+    model = Student
+    fields = ["name", "surname", "age", "gender", "email"]
+    template_name = 'student_update.html'
+    success_url = reverse_lazy('class_student_list')
 
-        student = get_object_or_404(Student, id=id)
-        student_form = StudentForm(instance=student)
-        context = {
-            'form': student_form,
-            'student': student,
-        }
-        return render(
-            request = request,
-            template_name= 'student_update.html',
-            context = context
-        )
+class ShowBookView(ListView):
 
-    def post(self, request, id):
-
-        student = get_object_or_404(Student, id=id)
-        student_form = StudentForm(request.POST, instance = student)
-
-        if student_form.is_valid():
-            student_form.save()
-
-        return redirect(reverse('class_student_list'))
-
-class ShowBookView(View):
-
-    def get(self, request):
-
-
-        books = Book.objects.all()
-
-        context = {
-            "books": books,
-
-        }
-        return render(
-            request=request,
-            template_name="book_list.html",
-            context=context
-        )
+    model = Book
+    template_name = 'book_list.html'
 
 class BookDeleteView(View):
 
@@ -239,45 +195,18 @@ class BookDeleteView(View):
 
         return redirect(reverse('class_books_list'))
 
-class BookUpdateView(View):
 
-    def get(self, request, id):
+class BookUpdateView(UpdateView):
 
-        book = get_object_or_404(Book, id=id)
-        book_form = BookForm(instance=book)
-        context = {
-            'form': book_form,
-            'book': book,
-        }
-        return render(
-            request = request,
-            template_name = 'book_update.html',
-            context = context
-        )
+    model = Book
+    fields = ['title']
+    template_name = 'book_update.html'
+    success_url = reverse_lazy('class_books_list')
 
-    def post(self, request, id):
+class ShowSubjectView(ListView):
 
-        book = get_object_or_404(Book, id=id)
-        book_form = BookForm(request.POST, instance=book)
-        if book_form.is_valid():
-            book_form.save()
-
-        return redirect(reverse('class_books_list'))
-
-class ShowSubjectView(View):
-
-    def get(self, request):
-
-        subjects = Subject.objects.all()
-        context = {
-            'subjects': subjects,
-        }
-
-        return render(
-            request = request,
-            template_name = 'subject_list.html',
-            context = context
-        )
+    model = Subject
+    template_name = 'subject_list.html'
 
 class SubjectDeleteView(View):
 
@@ -341,20 +270,10 @@ class AddStudentToSubjectView(View):
 
         return redirect(reverse('class_subject_update', kwargs={'id': subject_id}))
 
-class ShowTeacherView(View):
+class ShowTeacherView(ListView):
 
-    def get(self, request):
-
-        teachers = Teacher.objects.all()
-        context = {
-            'teachers': teachers,
-        }
-
-        return render(
-            request=request,
-            template_name='teacher_list.html',
-            context=context
-        )
+    model = Teacher
+    template_name = 'teacher_list.html'
 
 class DeleteTeacherView(View):
 
@@ -420,5 +339,11 @@ class AddStudentToTeacher(View):
 
         return redirect(reverse('class_teacher_update', kwargs={'id': teacher_id}))
 
+class SendMailview(View):
 
+    def get(self, request):
+
+        send_email(recipient_list = ['alfan2620@gmail.com',])
+
+        return redirect(reverse('class_student_list'))
 

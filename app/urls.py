@@ -21,7 +21,8 @@ from home.views import updateStudent, ShowAll, hello, create_student, create_stu
 from home.views_class import ShowAllView, AddNewStudentView, UpdateStudentView, AddStudentByNameView, DeleteStudentView, \
     ShowBookView, BookDeleteView, BookUpdateView, ShowSubjectView, SubjectDeleteView, SubjectUpdateView, \
     DeleteStudentFromSubjectView, AddStudentToSubjectView, ShowTeacherView, DeleteTeacherView, UpdateTeacherView, \
-    DeleteStudentFromTeacher, AddStudentToTeacher, XMLView, JSONView, CSVView, FileView
+    DeleteStudentFromTeacher, AddStudentToTeacher, XMLView, JSONView, CSVView, FileView, SendMailview
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -35,15 +36,15 @@ urlpatterns = [
     path('class/students/', ShowAllView.as_view(), name = 'class_student_list'),
     path('class/student/create/', AddStudentByNameView.as_view(), name = 'class_student_create'),
     path('class/student/form/create/', AddNewStudentView.as_view(), name = 'class_student_form_create'),
-    path('class/student/update/<id>/', UpdateStudentView.as_view(), name = 'class_student_update'),
+    path('class/student/update/<pk>/', UpdateStudentView.as_view(), name = 'class_student_update'),
 
     path('class/books/', ShowBookView.as_view(), name = 'class_books_list'),
     path('class/book/delete/', BookDeleteView.as_view(), name = 'class_book_delete'),
-    path('class/book/update/<id>/', BookUpdateView.as_view(), name = 'class_book_update'),
+    path('class/book/update/<pk>/', BookUpdateView.as_view(), name = 'class_book_update'),
 
     path('class/subjects/', ShowSubjectView.as_view(), name = 'class_subjects_list'),
     path('class/subject/delete/', SubjectDeleteView.as_view(), name = 'class_subject_delete'),
-    path('class/subject/update/<id>/', SubjectUpdateView.as_view(), name = 'class_subject_update'),
+    path('class/subject/update/<pk>/', SubjectUpdateView.as_view(), name = 'class_subject_update'),
     path('class/subject_student/delete/', DeleteStudentFromSubjectView.as_view(), name = 'delete_student_from_subject'),
     path('class/subject_student/add/<subject_id>/', AddStudentToSubjectView.as_view(), name = 'add_student_to_subject'),
 
@@ -57,5 +58,7 @@ urlpatterns = [
     path('csv_view', CSVView.as_view(), name = 'csv_view'),
     path('xml_view', XMLView.as_view(), name = 'xml_view'),
     path('file_view', FileView.as_view(), name = 'file_view'),
+
+    path('send_email', SendMailview.as_view(), name = 'send_email_view'),
 
 ]

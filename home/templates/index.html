@@ -26,7 +26,7 @@
   <input type="button" value="Update student" onclick="submitForm()" class="btn btn-primary" />
 </form>
 <script>
-    var updateURL = "{% url 'class_student_update' id=0 %}";
+    var updateURL = "{% url 'class_student_update' pk=0 %}";
 
     function submitForm() {
 
@@ -106,7 +106,7 @@
                     Email:<b>{{student.email}}</b>
                     <div class="d-flex justify-content-between align-items-center">
                     <div class="btn-group">
-                      <input type="button" onclick="window.location.href = '{% url 'class_student_update' id=student.id %}';" class="btn btn-sm btn-outline-secondary" value="Edit"/>
+                      <input type="button" onclick="window.location.href = '{% url 'class_student_update' pk=student.id %}';" class="btn btn-sm btn-outline-secondary" value="Edit"/>
                       <input type="button" onclick="deleteStudent('{{ student.id }}')" class="btn btn-sm btn-outline-secondary" value="Delete"/>
                     </div>
                   </div>

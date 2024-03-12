@@ -7,18 +7,19 @@
 
 {# comment Django template #}
 
-    {% for book in books %}
+    {% for book in object_list %}
     <nav class="navbar navbar-expand navbar-dark bg-dark">
       <div class="navbar-brand" >Book number: {{ book.title }}</div>
+        {% if book.student.name %}
       <div class="navbar-brand" >Student: {{ book.student.name }} {{ book.student.surname }}</div>
       <div class="navbar-brand" >Subject: {{ book.student.subject.title }}</div>
-
+        {% endif %}
 
       <div class="collapse navbar-collapse" >
         <ul class="navbar-nav mr-auto">
         </ul>
         <div class="btn-group">
-          <input type="button" onclick="window.location.href = '{% url 'class_book_update' id=book.id %}';" class="btn btn-sm btn-outline-secondary" value="Edit"/>
+          <input type="button" onclick="window.location.href = '{% url 'class_book_update' pk=book.id %}';" class="btn btn-sm btn-outline-secondary" value="Edit"/>
           <input type="button" onclick="deleteBook('{{ book.id }}')" class="btn btn-sm btn-outline-secondary" value="Delete"/>
         </div>
       </div>

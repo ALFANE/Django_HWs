@@ -10,7 +10,7 @@
         <h2>New Student Form</h2>
 
       </div>
-      <form method="POST" action="{% url 'class_student_form_create' %}">
+      <form method="POST">
           {% csrf_token %}
       <div class="row">
         <div class="col-md-8 order-md-1">

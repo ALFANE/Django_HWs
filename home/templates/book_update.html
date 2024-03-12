@@ -10,7 +10,7 @@
         <h2>Book Update Form</h2>
 
       </div>
-      <form method="POST" action="{% url 'class_book_update' id=book.id %}">
+      <form method="POST" >
           {% csrf_token %}
       <div class="row">
         <div class="col-md-8 order-md-1">
