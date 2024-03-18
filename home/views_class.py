@@ -117,6 +117,7 @@ class CSVView(View):
             ])
 
         return response
+
 class JSONView(View):
     def get(self, request):
 
@@ -134,6 +135,7 @@ class JSONView(View):
                 "book__title",
             )),
         })
+
 class FileView(View):
     def get(self, request):
 
@@ -174,7 +176,6 @@ class AddNewStudentView(CreateView):
     template_name = 'student_form.html'
     success_url = reverse_lazy('class_student_list')
 
-
 class DeleteStudentView(View):
 
     def get(self, request):
@@ -210,7 +211,6 @@ class BookDeleteView(View):
         book.delete()
 
         return redirect(reverse('class_books_list'))
-
 
 class BookUpdateView(UpdateView):
 
