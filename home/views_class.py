@@ -18,6 +18,14 @@ from home.tasks import test_task_celery2, compile_task
 from home.models import Student, Book, Subject, Teacher
 from home.forms import StudentForm, BookForm, SubjectForm, TeacherForm
 
+class StartPage(View):
+
+    def get(self, request):
+        return render(
+            request = request,
+            template_name= 'start_page.html'
+        )
+
 @method_decorator(cache_page(settings.CACHE_TTL), name='dispatch')
 class ShowAllView(View):
 
