@@ -20,16 +20,16 @@ def pre_save_check_gender_with_name(sender, instance, **kwargs):
     instance.gender = detector.get_gender(instance.name)
 
 
-@receiver(pre_delete, sender=Student)
-def pre_delete_cancel_delete(sender, instance, **kwargs):
-    # Добавьте здесь вашу логику проверок перед удалением
-    # Если вы хотите отменить удаление, вызовите исключение или измените состояние объекта
-
-
-    should_cancel = input('Do you want to delete {}, write yes or not: '.format(instance))  # Замените на вашу логику проверки
-    if should_cancel.lower() == 'not':
-        print(f"Deletion of Student {instance} is canceled.")
-        # Вы можете вызвать исключение или изменить состояние объекта, чтобы отменить удаление
-        raise Exception("Deletion is canceled.")
-    else:
-        print('Students has been deleted')
+# @receiver(pre_delete, sender=Student)
+# def pre_delete_cancel_delete(sender, instance, **kwargs):
+#     # Добавьте здесь вашу логику проверок перед удалением
+#     # Если вы хотите отменить удаление, вызовите исключение или измените состояние объекта
+#
+#
+#     should_cancel = input('Do you want to delete {}, write yes or not: '.format(instance))  # Замените на вашу логику проверки
+#     if should_cancel.lower() == 'not':
+#         print(f"Deletion of Student {instance} is canceled.")
+#         # Вы можете вызвать исключение или изменить состояние объекта, чтобы отменить удаление
+#         raise Exception("Deletion is canceled.")
+#     else:
+#         print('Students has been deleted')

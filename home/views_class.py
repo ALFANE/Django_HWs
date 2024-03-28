@@ -90,9 +90,7 @@ class ShowAllView(View):
             #     cache_value = "Cached value"
             #     cache.set('some_key', cache_value)
 
-            students = Student.objects.\
-                select_related('book', 'subject').\
-                prefetch_related('teachers').all()
+            students = Student.objects.all()
 
 
             context = {
