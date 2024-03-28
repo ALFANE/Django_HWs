@@ -23,11 +23,11 @@ from home.views import updateStudent, ShowAll, hello, create_student, create_stu
 from home.views_class import ShowAllView, AddNewStudentView, UpdateStudentView, AddStudentByNameView, DeleteStudentView, \
     ShowBookView, BookDeleteView, BookUpdateView, ShowSubjectView, SubjectDeleteView, SubjectUpdateView, \
     DeleteStudentFromSubjectView, AddStudentToSubjectView, ShowTeacherView, DeleteTeacherView, UpdateTeacherView, \
-    DeleteStudentFromTeacher, AddStudentToTeacher, XMLView, JSONView, CSVView, FileView, SendMailview
-
+    DeleteStudentFromTeacher, AddStudentToTeacher, XMLView, JSONView, CSVView, FileView, SendMailview, StartPage
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path('', StartPage.as_view(), name = 'start_page'),
     path("home/", hello),
     path("students/", ShowAll, name ='student_list'),
     path('student/update/<id>/', updateStudent, name = 'update_student'),

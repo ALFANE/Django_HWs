@@ -27,7 +27,13 @@ SECRET_KEY = "django-insecure-8o3ai%$iu_h=p5)51kczto(o_kh6zpn_(tofldxe5$^u00^s4w
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '192.168.0.102',
+    'localhost',
+
+]
+
+STATIC_ROOT = '/home/alfan/user/Hillel/HW_remastered/5_Django/appp/static'
 
 
 # Application definition
@@ -98,7 +104,7 @@ CACHES = {
     }
 }
 
-CACHE_TTL = 60*15  #Время которое будет хранится кэш, записывается числами в секундах здесь 15 минут = 60 секунд умноженое на 15
+CACHE_TTL = 1  #Время которое будет хранится кэш, записывается числами в секундах здесь 15 минут = 60 секунд умноженое на 15
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators

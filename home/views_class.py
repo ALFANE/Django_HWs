@@ -18,6 +18,14 @@ from home.tasks import test_task_celery2, compile_task
 from home.models import Student, Book, Subject, Teacher
 from home.forms import StudentForm, BookForm, SubjectForm, TeacherForm
 
+class StartPage(View):
+
+    def get(self, request):
+        return render(
+            request = request,
+            template_name= 'start_page.html'
+        )
+
 @method_decorator(cache_page(settings.CACHE_TTL), name='dispatch')
 class ShowAllView(View):
 
@@ -82,9 +90,7 @@ class ShowAllView(View):
             #     cache_value = "Cached value"
             #     cache.set('some_key', cache_value)
 
-            students = Student.objects.\
-                select_related('book', 'subject').\
-                prefetch_related('teachers').all()
+            students = Student.objects.all()
 
 
             context = {
@@ -117,6 +123,7 @@ class CSVView(View):
             ])
 
         return response
+
 class JSONView(View):
     def get(self, request):
 
@@ -134,6 +141,7 @@ class JSONView(View):
                 "book__title",
             )),
         })
+
 class FileView(View):
     def get(self, request):
 
@@ -174,7 +182,6 @@ class AddNewStudentView(CreateView):
     template_name = 'student_form.html'
     success_url = reverse_lazy('class_student_list')
 
-
 class DeleteStudentView(View):
 
     def get(self, request):
@@ -210,7 +217,6 @@ class BookDeleteView(View):
         book.delete()
 
         return redirect(reverse('class_books_list'))
-
 
 class BookUpdateView(UpdateView):
 
