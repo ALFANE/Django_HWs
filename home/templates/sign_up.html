@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title_content %}Sign up{% endblock %}
+
+{% block body_content %}
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Sign Up" class="btn btn-primary">
+</form><br>
+<input type="submit" value="Already registered" onclick="window.location.href = '{% url 'sign_in_view' %}';" class="btn btn-primary">
+{% endblock %}
