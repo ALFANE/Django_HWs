@@ -6,6 +6,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.cache import cache
 from django.forms import model_to_dict
 from django.utils.decorators import method_decorator
@@ -57,9 +58,19 @@ class SignUpView(View):
             user.set_password(request.POST['password1'])
             user.save()
 
+            current_site = get_current_site(request)
+            domain = current_site.domain
+            print(current_site)
+            print(domain)
+
             uid = urlsafe_base64_encode(force_bytes(user.pk))
-            activate_url = '{}/{}/{}'.format(
-                'http://localhost:8001/activate',
+            # activate_url = '{}/{}/{}'.format(
+            #     'http://localhost:8001/activate',
+            #     uid,
+            #     default_token_generator.make_token(user=user)
+            # )
+            activate_url = 'http://{}/activate/{}/{}'.format(
+                domain,
                 uid,
                 default_token_generator.make_token(user=user)
             )
