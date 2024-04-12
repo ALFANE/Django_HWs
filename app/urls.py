@@ -23,11 +23,12 @@ from home.views import updateStudent, ShowAll, hello, create_student, create_stu
 from home.views_class import ShowAllView, AddNewStudentView, UpdateStudentView, AddStudentByNameView, DeleteStudentView, \
     ShowBookView, BookDeleteView, BookUpdateView, ShowSubjectView, SubjectDeleteView, SubjectUpdateView, \
     DeleteStudentFromSubjectView, AddStudentToSubjectView, ShowTeacherView, DeleteTeacherView, UpdateTeacherView, \
-    DeleteStudentFromTeacher, AddStudentToTeacher, XMLView, JSONView, CSVView, FileView, SendMailview
-
+    DeleteStudentFromTeacher, AddStudentToTeacher, XMLView, JSONView, CSVView, FileView, SendMailview, StartPage, \
+    SignUpView, ActivateView, SignOutView, SignInView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path('', StartPage.as_view(), name = 'start_page'),
     path("home/", hello),
     path("students/", ShowAll, name ='student_list'),
     path('student/update/<id>/', updateStudent, name = 'update_student'),
@@ -38,7 +39,7 @@ urlpatterns = [
     path('class/student/delete/', DeleteStudentView.as_view(), name = 'class_student_delete'),
     path('class/student/create/', AddStudentByNameView.as_view(), name = 'class_student_create'),
     path('class/student/form/create/', AddNewStudentView.as_view(), name = 'class_student_form_create'),
-    path('class/student/update/<pk>/', UpdateStudentView.as_view(), name = 'class_student_update'),
+    path('class/student/update/<pk>', UpdateStudentView.as_view(), name = 'class_student_update'),
 
     path('class/books/', ShowBookView.as_view(), name = 'class_books_list'),
     path('class/book/delete/', BookDeleteView.as_view(), name = 'class_book_delete'),
@@ -62,5 +63,11 @@ urlpatterns = [
     path('file_view', FileView.as_view(), name = 'file_view'),
 
     path('send_email', SendMailview.as_view(), name = 'send_email_view'),
+
+    path('sign_up', SignUpView.as_view(), name = 'sign_up_view'),
+    path('activate/<uid>/<token>/', ActivateView.as_view(), name='activate_view'),
+    path('sign_out', SignOutView.as_view(), name='sign_out_view'),
+    path('sign_in', SignInView.as_view(), name = 'sign_in_view'),
+
 
 ]

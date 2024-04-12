@@ -2,9 +2,15 @@ import csv
 from time import sleep
 
 from django.conf import settings
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.models import User
+from django.contrib.auth.tokens import default_token_generator
 from django.core.cache import cache
 from django.forms import model_to_dict
 from django.utils.decorators import method_decorator
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse, FileResponse
@@ -16,88 +22,183 @@ from app.celery import test_task_celery
 from home.emails import send_email
 from home.tasks import test_task_celery2, compile_task
 from home.models import Student, Book, Subject, Teacher
-from home.forms import StudentForm, BookForm, SubjectForm, TeacherForm
+from home.forms import StudentForm, BookForm, SubjectForm, TeacherForm, UserSignUpForm
+
+
+class StartPage(View):
+
+    def get(self, request):
+        return render(
+            request = request,
+            template_name= 'start_page.html'
+        )
+
+class SignUpView(View):
+
+    def get(self, request):
+
+        sign_up_form = UserSignUpForm()
+        context = {
+            'form': sign_up_form,
+        }
+
+        return render(
+            request = request,
+            template_name = 'sign_up.html',
+            context = context
+        )
+
+    def post(self, request):
+
+        sign_up_form = UserSignUpForm(request.POST)
+        if sign_up_form.is_valid():
+            user = sign_up_form.save()
+            user.is_active = False
+            user.set_password(request.POST['password1'])
+            user.save()
+
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            activate_url = '{}/{}/{}'.format(
+                'http://localhost:8001/activate',
+                uid,
+                default_token_generator.make_token(user=user)
+            )
+            send_email(
+                recipient_list=[user.email],
+                activate_url=activate_url
+            )
+            return HttpResponse('Check yoor email to activate your account!')
+        return HttpResponse('Wrong data!')
+class ActivateView(View):
+
+    def get(self, request, uid, token):
+
+        user_id = force_bytes(urlsafe_base64_decode(uid))
+        user = User.objects.get(pk=user_id)
+        if not user.is_active and default_token_generator.check_token(user, token):
+
+            user.is_active = True
+            user.save()
+            login(request, user)
+
+            return HttpResponse('Token checked. Your account has been activated')
+
+        return HttpResponse('Your account already activated')
+
+class SignInView(View):
+
+    def get(self, request):
+
+        sign_in_form = AuthenticationForm()
+        context = {
+            'form': sign_in_form,
+        }
+
+        return render(
+            request = request,
+            template_name = 'sign_in.html',
+            context = context
+        )
+
+    def post(self, request):
+
+        # sign_in_form = AuthenticationForm(request.POST.get)
+        # print(sign_in_form)
+        user_a = authenticate(
+            request = request,
+            username = request.POST.get('username'),
+            password = request.POST.get('password')
+        )
+        login(request, user_a)
+
+        return redirect(reverse('start_page'))
+class SignOutView(View):
+
+    def get(self, request):
+
+        logout(request)
+        print(request.user)
+        return redirect(reverse('start_page'))
 
 @method_decorator(cache_page(settings.CACHE_TTL), name='dispatch')
 class ShowAllView(View):
 
     def get(self, request):
 
-        test_task_celery.delay()
-        test_task_celery2.delay()
-        compile_task.delay()
+        if request.user.is_authenticated:
 
-        # sleep(10)
+            # test_task_celery.delay()
+            # test_task_celery2.delay()
+            # compile_task.delay()
+            if request.GET.get('teacher_name'):
 
-        if request.GET.get('teacher_name'):
+                teacher_name = request.GET.get('teacher_name')
+                students = Student.objects.filter(teachers__name=teacher_name)
+                context = {
+                    'students': students,
+                }
 
-            teacher_name = request.GET.get('teacher_name')
-            students = Student.objects.filter(teachers__name=teacher_name)
-            context = {
-                'students': students,
-            }
+                return render(
+                    request=request,
+                    template_name="index.html",
+                    context=context
+                )
 
-            return render(
-                request=request,
-                template_name="index.html",
-                context=context
-            )
+            elif request.GET.get('subject_name'):
 
-        elif request.GET.get('subject_name'):
+                subject_name = request.GET.get('subject_name')
+                students = Student.objects.filter(subject__title=subject_name)
+                context = {
+                    "students": students,
+                }
 
-            subject_name = request.GET.get('subject_name')
-            students = Student.objects.filter(subject__title=subject_name)
-            context = {
-                "students": students,
-            }
+                return render(
+                    request=request,
+                    template_name="index.html",
+                    context=context
+                )
 
-            return render(
-                request=request,
-                template_name="index.html",
-                context=context
-            )
+            elif request.GET.get('book_number'):
 
-        elif request.GET.get('book_number'):
+                book_number = request.GET.get('book_number')
+                students = Student.objects.filter(book__title=book_number)
+                print(students)
+                context = {
+                    "students": students,
+                }
 
-            book_number = request.GET.get('book_number')
-            students = Student.objects.filter(book__title=book_number)
-            print(students)
-            context = {
-                "students": students,
-            }
+                return render(
+                    request=request,
+                    template_name="index.html",
+                    context=context
+                )
 
-            return render(
-                request=request,
-                template_name="index.html",
-                context=context
-            )
+            else:
 
+                # В основном для кеширование используют вилку
+                # проверяя есть ли значение в кэше и если есть,
+                # то взять если нет то сохранить и взять
+                # cache_value = cache.get('some_key')
+                # if not cache_value:
+                #     cache_value = "Cached value"
+                #     cache.set('some_key', cache_value)
+
+                students = Student.objects.all()
+
+
+                context = {
+                    "students": students,
+                    'string': 'Test string',
+                    # 'cached_value': cache_value,
+                }
+
+                return render(
+                    request=request,
+                    template_name="index.html",
+                    context=context
+                )
         else:
-
-            # В основном для кеширование используют вилку
-            # проверяя есть ли значение в кэше и если есть,
-            # то взять если нет то сохранить и взять
-            # cache_value = cache.get('some_key')
-            # if not cache_value:
-            #     cache_value = "Cached value"
-            #     cache.set('some_key', cache_value)
-
-            students = Student.objects.\
-                select_related('book', 'subject').\
-                prefetch_related('teachers').all()
-
-
-            context = {
-                "students": students,
-                'string': 'Test string',
-                # 'cached_value': cache_value,
-            }
-
-            return render(
-                request=request,
-                template_name="index.html",
-                context=context
-            )
+            return redirect(reverse('sign_in_view'))
 
 class CSVView(View):
     def get(self, request):
@@ -117,6 +218,7 @@ class CSVView(View):
             ])
 
         return response
+
 class JSONView(View):
     def get(self, request):
 
@@ -134,6 +236,7 @@ class JSONView(View):
                 "book__title",
             )),
         })
+
 class FileView(View):
     def get(self, request):
 
@@ -174,7 +277,6 @@ class AddNewStudentView(CreateView):
     template_name = 'student_form.html'
     success_url = reverse_lazy('class_student_list')
 
-
 class DeleteStudentView(View):
 
     def get(self, request):
@@ -210,7 +312,6 @@ class BookDeleteView(View):
         book.delete()
 
         return redirect(reverse('class_books_list'))
-
 
 class BookUpdateView(UpdateView):
 

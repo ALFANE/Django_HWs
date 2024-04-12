@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title_content %}Start page{% endblock %}
+{% block body_content %}
+
+
+<h2><a href="{% url 'class_student_list' %}">All students</a>
+<a href="{% url 'class_books_list' %}">All books</a>
+<a href="{% url 'class_subjects_list' %}">All subjects</a>
+<a href="{% url 'class_teachers_list' %}">All teachers</a> </h2>
+<h2><a href="{% url 'json_view' %}">JSON</a> </h2>
+<h2><a href="{% url 'csv_view' %}">CSV</a> </h2>
+<h2><a href="{% url 'xml_view' %}">XML</a> </h2>
+<h2><a href="{% url 'file_view' %}">File</a> </h2>
+<h2><a href="{% url 'send_email_view' %}">Send Email</a> </h2>
+<h2><a href="{% url 'sign_up_view' %}">Sign UP</a> </h2>
+<h2><a href="{% url 'sign_in_view' %}">Sign In</a> </h2>
+<h2><a href="{% url 'sign_out_view' %}">Send OUT</a> </h2>
+
+
+
+{% endblock %}

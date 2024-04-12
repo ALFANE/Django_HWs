@@ -1,0 +1,35 @@
+NGINX:
+
+upstream 192.168.0.102 {
+         server 127.0.0.1:8000;
+}
+
+server {
+        listen 8080;
+      
+        server_name _;
+
+	location /static {
+            root /home/alfan/user/Hillel/HW_remastered/5_Django/appp;
+
+        # Add index.php to the list if you are using PHP
+        try_files $uri $uri/ =404;
+        }
+
+	location / {
+		proxy_pass http://192.168.0.102;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+        proxy_redirect off;
+	}
+}
+
+SUPERVISOR:
+
+[program:django_gunicorn]
+command=/home/alfan/.cache/pypoetry/virtualenvs/appp-vukuB-zh-py3.10/bin/gunicorn app.wsgi
+directory=/home/alfan/user/Hillel/HW_remastered/5_Django/appp
+autostart=true
+autorestart=true
+stderr_logfile=/var/log/myproject.err.log
+stdout_logfile=/var/log/myproject.out.log

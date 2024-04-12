@@ -47,21 +47,21 @@
 </script>
 <p></p>
 
-<form id="{% url 'class_student_list' %}" method="GET">
+<form action="{% url 'class_student_list' %}" method="GET">
     {% csrf_token %}
   <input type="text" name="teacher_name"/>
   <input type="submit" value="Filter on teacher"  class="btn btn-primary" />
 </form>
 <p></p>
 
-<form id="{% url 'class_student_list' %}" method="GET">
+<form action="{% url 'class_student_list' %}" method="GET">
 {% csrf_token %}
   <input type="text" name="subject_name"/>
   <input type="submit" value="Filter on subject"  class="btn btn-primary" />
 </form>
 <p></p>
 
-<form id="{% url 'class_student_list' %}" method="GET">
+<form action="{% url 'class_student_list' %}" method="GET">
 {% csrf_token %}
   <input type="text" name="book_number"/>
   <input type="submit" value="Filter on book"  class="btn btn-primary" />

@@ -20,7 +20,7 @@
         <ul class="navbar-nav mr-auto">
         </ul>
         <div class="btn-group">
-          <input type="button" onclick="window.location.href = '{% url 'class_subject_update' id=subject.id %}';" class="btn btn-sm btn-outline-secondary" value="Edit"/>
+          <input type="button" onclick="window.location.href = '{% url 'class_subject_update' pk=subject.id %}';" class="btn btn-sm btn-outline-secondary" value="Edit"/>
           <input type="button" onclick="deleteSubject('{{ subject.id }}')" class="btn btn-sm btn-outline-secondary" value="Delete"/>
         </div>
       </div>
