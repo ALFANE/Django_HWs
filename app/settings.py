@@ -63,6 +63,9 @@ MIDDLEWARE = [
 
 ]
 
+MEDIA_ROOT = '/home/alfan/user/Hillel/HW_remastered/5_Django/appp/media'
+MEDIA_URL = 'media/'
+
 ROOT_URLCONF = "app.urls"
 
 TEMPLATES = [

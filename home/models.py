@@ -17,6 +17,7 @@ class Student(models.Model):
     email = models.EmailField(null=True)
     social_url = models.URLField(null=True)
     is_active = models.CharField(max_length=20, null=True)
+    picture = models.ImageField(upload_to='student_photos/', null=True)
     subject = models.ForeignKey(
         to = 'home.Subject',
         on_delete=models.SET_NULL,
