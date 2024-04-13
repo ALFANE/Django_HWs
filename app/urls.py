@@ -14,6 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 from django.views.decorators.cache import cache_page
@@ -39,7 +40,7 @@ urlpatterns = [
     path('class/student/delete/', DeleteStudentView.as_view(), name = 'class_student_delete'),
     path('class/student/create/', AddStudentByNameView.as_view(), name = 'class_student_create'),
     path('class/student/form/create/', AddNewStudentView.as_view(), name = 'class_student_form_create'),
-    path('class/student/update/<pk>', UpdateStudentView.as_view(), name = 'class_student_update'),
+    path('class/student/update/<pk>/', UpdateStudentView.as_view(), name = 'class_student_update'),
 
     path('class/books/', ShowBookView.as_view(), name = 'class_books_list'),
     path('class/book/delete/', BookDeleteView.as_view(), name = 'class_book_delete'),
@@ -67,7 +68,6 @@ urlpatterns = [
     path('sign_up', SignUpView.as_view(), name = 'sign_up_view'),
     path('activate/<uid>/<token>/', ActivateView.as_view(), name='activate_view'),
     path('sign_out', SignOutView.as_view(), name='sign_out_view'),
-    path('sign_in', SignInView.as_view(), name = 'sign_in_view'),
+    path('sign_in', SignInView.as_view(), name = 'sign_in_view')
 
-
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

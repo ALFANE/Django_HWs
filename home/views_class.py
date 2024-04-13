@@ -6,6 +6,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.cache import cache
 from django.forms import model_to_dict
 from django.utils.decorators import method_decorator
@@ -57,9 +58,19 @@ class SignUpView(View):
             user.set_password(request.POST['password1'])
             user.save()
 
+            current_site = get_current_site(request)
+            domain = current_site.domain
+            print(current_site)
+            print(domain)
+
             uid = urlsafe_base64_encode(force_bytes(user.pk))
-            activate_url = '{}/{}/{}'.format(
-                'http://localhost:8001/activate',
+            # activate_url = '{}/{}/{}'.format(
+            #     'http://localhost:8001/activate',
+            #     uid,
+            #     default_token_generator.make_token(user=user)
+            # )
+            activate_url = 'http://{}/activate/{}/{}'.format(
+                domain,
                 uid,
                 default_token_generator.make_token(user=user)
             )
@@ -200,62 +211,6 @@ class ShowAllView(View):
         else:
             return redirect(reverse('sign_in_view'))
 
-class CSVView(View):
-    def get(self, request):
-
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = "attachment; filename=data_students.csv"
-        writer_for_response = csv.writer(response)
-        writer_for_response.writerow(["Name", "Surname", "Subject", "Book"])
-
-        students = Student.objects.all()
-        for student in students:
-            writer_for_response.writerow([
-                student.name,
-                student.surname,
-                student.subject.title if student.subject else None,
-                student.book.title if student.subject else None,
-            ])
-
-        return response
-
-class JSONView(View):
-    def get(self, request):
-
-        student = Student.objects.first()
-        students = Student.objects.all()
-
-        return JsonResponse({
-            "student": model_to_dict(student),
-            "students": list(students.values(
-                "name",
-                "surname",
-                "age",
-                "gender",
-                "subject__title",
-                "book__title",
-            )),
-        })
-
-class FileView(View):
-    def get(self, request):
-
-        with open('pyproject.toml') as file:
-            read_file = file.read()
-
-            response = FileResponse(read_file)
-            response['Content-Disposition'] = "attachment; filename={}".format(file.name)
-
-            return response
-class XMLView(View):
-    def get(self, request):
-        with open('test_xml.xml') as file:
-            read_file = file.read()
-            response = FileResponse(read_file)
-            response['Content-Type'] = 'text/xml'
-
-            return response
-
 class AddStudentByNameView(View):
 
     def get(self, request):
@@ -273,7 +228,7 @@ class AddStudentByNameView(View):
 class AddNewStudentView(CreateView):
 
     model = Student
-    fields = ['name', 'surname', 'age', 'gender', 'email']
+    fields = ['name', 'surname', 'age', 'gender', 'email', 'picture']
     template_name = 'student_form.html'
     success_url = reverse_lazy('class_student_list')
 
@@ -292,7 +247,7 @@ class DeleteStudentView(View):
 class UpdateStudentView(UpdateView):
 
     model = Student
-    fields = ["name", "surname", "age", "gender", "email"]
+    fields = ["name", "surname", "age", "gender", "email", "picture"]
     template_name = 'student_update.html'
     success_url = reverse_lazy('class_student_list')
 
@@ -463,4 +418,61 @@ class SendMailview(View):
         send_email(recipient_list = ['alfan2620@gmail.com',])
 
         return redirect(reverse('class_student_list'))
+
+class CSVView(View):
+    def get(self, request):
+
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = "attachment; filename=data_students.csv"
+        writer_for_response = csv.writer(response)
+        writer_for_response.writerow(["Name", "Surname", "Subject", "Book"])
+
+        students = Student.objects.all()
+        for student in students:
+            writer_for_response.writerow([
+                student.name,
+                student.surname,
+                student.subject.title if student.subject else None,
+                student.book.title if student.subject else None,
+            ])
+
+        return response
+
+class JSONView(View):
+    def get(self, request):
+
+        student = Student.objects.first()
+        students = Student.objects.all()
+
+        return JsonResponse({
+            "student": model_to_dict(student),
+            "students": list(students.values(
+                "name",
+                "surname",
+                "age",
+                "gender",
+                "subject__title",
+                "book__title",
+            )),
+        })
+
+class FileView(View):
+    def get(self, request):
+
+        with open('pyproject.toml') as file:
+            read_file = file.read()
+
+            response = FileResponse(read_file)
+            response['Content-Disposition'] = "attachment; filename={}".format(file.name)
+
+            return response
+class XMLView(View):
+    def get(self, request):
+        with open('test_xml.xml') as file:
+            read_file = file.read()
+            response = FileResponse(read_file)
+            response['Content-Type'] = 'text/xml'
+
+            return response
+
 

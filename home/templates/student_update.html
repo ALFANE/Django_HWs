@@ -10,7 +10,7 @@
         <h2>Student Update Form</h2>
 
       </div>
-      <form method="POST" >
+      <form method="POST" enctype="multipart/form-data">
           {% csrf_token %}
       <div class="row">
         <div class="col-md-8 order-md-1">
@@ -35,6 +35,10 @@
               <div class="col-md-6 mb-3">
                 <label>Email</label></br>
                 {{ form.email }}
+              </div>
+              <div class="col-md-6 mb-3">
+                <label>Picture</label></br>
+                {{ form.picture }}
               </div>
             </div>
 

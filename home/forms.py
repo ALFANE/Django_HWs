@@ -8,7 +8,7 @@ from home.models import Student, Book, Subject, Teacher
 class StudentForm(ModelForm):
     class Meta:
         model = Student
-        fields = ["name", "surname", "age", "gender", "email"]
+        fields = ["name", "surname", "age", "gender", "email", 'picture']
 
 class BookForm(ModelForm):
 
