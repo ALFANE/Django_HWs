@@ -18,9 +18,11 @@ from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse, File
 from django.urls import reverse, reverse_lazy
 from django.views.decorators.cache import cache_page
 from django.views.generic import ListView, CreateView, UpdateView
+from rest_framework.viewsets import ModelViewSet
 
 from app.celery import test_task_celery
 from home.emails import send_email
+from home.serializers import StudentSerializer, SubjectSerializer, TeacherSerializer, BookSerializer
 from home.tasks import test_task_celery2, compile_task
 from home.models import Student, Book, Subject, Teacher
 from home.forms import StudentForm, BookForm, SubjectForm, TeacherForm, UserSignUpForm
@@ -195,7 +197,6 @@ class ShowAllView(View):
                 #     cache.set('some_key', cache_value)
 
                 students = Student.objects.all()
-
 
                 context = {
                     "students": students,
@@ -475,4 +476,31 @@ class XMLView(View):
 
             return response
 
+class StudentAPIView(View):
+
+    def get(self, request):
+
+        students = Student.objects.all()
+
+        return JsonResponse({
+            'students': list(students.values(
+                'id', 'name', 'surname', 'age', 'gender', 'email'
+            ))
+        })
+class StudentViewSet(ModelViewSet):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+    # filter_backends =
+
+class SubjectViewSet(ModelViewSet):
+    queryset = Subject.objects.all()
+    serializer_class = SubjectSerializer
+
+class TeacherViewSet(ModelViewSet):
+    queryset = Teacher.objects.all()
+    serializer_class = TeacherSerializer
+
+class BookViewSet(ModelViewSet):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
 

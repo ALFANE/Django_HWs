@@ -45,13 +45,20 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'django_extensions',
+
+    'rest_framework',
+
+    "django_extensions",
+    "corsheaders",
     "home",
+
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -62,6 +69,9 @@ MIDDLEWARE = [
     "app.middleware.IdentifyResponseMiddleware",
 
 ]
+
+
+CORS_ORIGIN_ALLOW_ALL=True
 
 MEDIA_ROOT = '/home/alfan/user/Hillel/HW_remastered/5_Django/appp/media'
 MEDIA_URL = 'media/'
