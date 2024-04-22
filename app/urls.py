@@ -13,11 +13,15 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import openai as openai
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.views.decorators.cache import cache_page
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+from rest_framework import routers, permissions
 
 from home.views import updateStudent, ShowAll, hello, create_student, create_student_by_form
 
@@ -25,9 +29,38 @@ from home.views_class import ShowAllView, AddNewStudentView, UpdateStudentView, 
     ShowBookView, BookDeleteView, BookUpdateView, ShowSubjectView, SubjectDeleteView, SubjectUpdateView, \
     DeleteStudentFromSubjectView, AddStudentToSubjectView, ShowTeacherView, DeleteTeacherView, UpdateTeacherView, \
     DeleteStudentFromTeacher, AddStudentToTeacher, XMLView, JSONView, CSVView, FileView, SendMailview, StartPage, \
-    SignUpView, ActivateView, SignOutView, SignInView
+    SignUpView, ActivateView, SignOutView, SignInView, StudentAPIView, StudentViewSet, SubjectViewSet, TeacherViewSet, \
+    BookViewSet
+
+
+schema_view = get_schema_view(
+   openapi.Info(
+      title="Snippets API",
+      default_version='v1',
+      description="Test description",
+      terms_of_service="https://www.google.com/policies/terms/",
+      contact=openapi.Contact(email="contact@snippets.local"),
+      license=openapi.License(name="BSD License"),
+   ),
+   public=True,
+   permission_classes=(permissions.AllowAny,),
+)
+
+
+router = routers.DefaultRouter()
+router.register(r'students/viewset', StudentViewSet, basename='students_api_viewset')
+router.register(r'subjects/viewset', SubjectViewSet, basename='subjects_api_viewset')
+router.register(r'teachers/viewset', TeacherViewSet, basename='teachers_api_viewset')
+router.register(r'books/viewset', BookViewSet, basename='books_api_viewset')
+
 
 urlpatterns = [
+    path('swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+
+    path('api/', include(router.urls)),
+
     path("admin/", admin.site.urls),
     path('', StartPage.as_view(), name = 'start_page'),
     path("home/", hello),
@@ -68,6 +101,8 @@ urlpatterns = [
     path('sign_up', SignUpView.as_view(), name = 'sign_up_view'),
     path('activate/<uid>/<token>/', ActivateView.as_view(), name='activate_view'),
     path('sign_out', SignOutView.as_view(), name='sign_out_view'),
-    path('sign_in', SignInView.as_view(), name = 'sign_in_view')
+    path('sign_in', SignInView.as_view(), name = 'sign_in_view'),
+
+    path('api/students', StudentAPIView.as_view(), name = 'students_api_view')
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
