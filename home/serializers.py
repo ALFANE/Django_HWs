@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from rest_framework import serializers
 
 from home.models import Student, Subject, Teacher, Book
@@ -16,8 +17,19 @@ class SubjectSerializer(serializers.ModelSerializer):
 
 class TeacherSerializer(serializers.ModelSerializer):
 
+    # students = serializers.SerializerMethodField('pagination_students')
     students = StudentSerializer(many=True)
 
+    # def pagination_students(self, obj):
+    #     students = Student.objects.all()
+    #
+    #     pagination = Paginator(students, per_page=10)
+    #     paginated_students = pagination.page(1)
+    #
+    #     return StudentSerializer(instance=paginated_students, many=True).data
+    """
+        пагинация студентов для каждого учителя
+    """
     class Meta:
         model = Teacher
         fields = ['id', 'name', 'students']

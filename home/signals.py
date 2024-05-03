@@ -17,7 +17,14 @@ def pre_save_normalized_name(sender, instance, **kwargs):
 def pre_save_check_gender_with_name(sender, instance, **kwargs):
 
     detector = Detector()
-    instance.gender = detector.get_gender(instance.name)
+    gender_localy = detector.get_gender(instance.name)
+    if gender_localy == 'male' or gender_localy == 'mostly_male':
+        instance.gender = 'M'
+    elif gender_localy == 'female' or gender_localy == 'mostly_female':
+        instance.gender = 'F'
+    else:
+        instance.gender = gender_localy
+    # instance.gender = detector.get_gender(instance.name)
 
 
 # @receiver(pre_delete, sender=Student)
