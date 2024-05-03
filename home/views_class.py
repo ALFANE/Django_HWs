@@ -18,10 +18,16 @@ from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse, File
 from django.urls import reverse, reverse_lazy
 from django.views.decorators.cache import cache_page
 from django.views.generic import ListView, CreateView, UpdateView
+from django_filters.rest_framework import DjangoFilterBackend
+
+from rest_framework import status, filters
+from rest_framework.pagination import LimitOffsetPagination, PageNumberPagination
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from app.celery import test_task_celery
 from home.emails import send_email
+from home.paginations import StudentPagination
 from home.serializers import StudentSerializer, SubjectSerializer, TeacherSerializer, BookSerializer
 from home.tasks import test_task_celery2, compile_task
 from home.models import Student, Book, Subject, Teacher
@@ -490,17 +496,44 @@ class StudentAPIView(View):
 class StudentViewSet(ModelViewSet):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
-    # filter_backends =
+    pagination_class = StudentPagination
+    # filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
+    """
+        filter_backends можно прописать здесь или же в settings для всех  и тогда просто для использования
+         указывать по каким полям фильтровать,  при использовании filters.OrderingFilter аналогично
+    """
+    filterset_fields = ('name',)
+
+    # def get_serializer(self):
+    #     if self.request.method == 'GET':
+    #         return ResponseStudentSerializer()
+    #     else:
+    #         return StudentSerializer()
+
+    # def list(self, request, *args, **kwargs):
+    #     students = Student.objects.all()
+    #     student_serializer = StudentSerializer(instance=students, many=True)
+    #     return Response(data={
+    #         'students':student_serializer.data,
+    #         'is_student':True
+    #     }, status=status.HTTP_200_OK)
+    # Переписан стандартный list
 
 class SubjectViewSet(ModelViewSet):
     queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
+    filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
+    filterset_fields = ('title',)
 
 class TeacherViewSet(ModelViewSet):
     queryset = Teacher.objects.all()
     serializer_class = TeacherSerializer
+    filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
+    filterset_fields = ('name',)
 
 class BookViewSet(ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
+    filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
+    filterset_fields = ('title',)
 

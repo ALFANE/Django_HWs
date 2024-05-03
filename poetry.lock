@@ -342,6 +342,20 @@ files = [
 Django = ">=3.2"
 
 [[package]]
+name = "django-filter"
+version = "24.2"
+description = "Django-filter is a reusable Django application for allowing users to filter querysets dynamically."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "django-filter-24.2.tar.gz", hash = "sha256:48e5fc1da3ccd6ca0d5f9bb550973518ce977a4edde9d2a8a154a7f4f0b9f96e"},
+    {file = "django_filter-24.2-py3-none-any.whl", hash = "sha256:df2ee9857e18d38bed203c8745f62a803fa0f31688c9fe6f8e868120b1848e48"},
+]
+
+[package.dependencies]
+Django = ">=4.2"
+
+[[package]]
 name = "django-redis"
 version = "5.4.0"
 description = "Full featured redis cache backend for Django."
@@ -1106,4 +1120,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "3.10.12"
-content-hash = "0389cb742abe4ecc79df6015dac5f20d4bb304f70dedc22af0067860ff9f16c1"
+content-hash = "35dfd81940a2d0a4be843eba567fb97fe94d93b41463dddaa3c40ba6cb9e3e47"
