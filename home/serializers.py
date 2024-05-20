@@ -17,16 +17,16 @@ class SubjectSerializer(serializers.ModelSerializer):
 
 class TeacherSerializer(serializers.ModelSerializer):
 
-    # students = serializers.SerializerMethodField('pagination_students')
-    students = StudentSerializer(many=True)
+    students = serializers.SerializerMethodField('pagination_students')
+    # students = StudentSerializer(many=True)
 
-    # def pagination_students(self, obj):
-    #     students = Student.objects.all()
-    #
-    #     pagination = Paginator(students, per_page=10)
-    #     paginated_students = pagination.page(1)
-    #
-    #     return StudentSerializer(instance=paginated_students, many=True).data
+    def pagination_students(self, obj):
+        students = obj.students.all()
+
+        pagination = Paginator(students, per_page=2)
+        paginated_students = pagination.page(1)
+
+        return StudentSerializer(instance=paginated_students, many=True).data
     """
         пагинация студентов для каждого учителя
     """

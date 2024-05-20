@@ -1,6 +1,8 @@
 import csv
+import uuid
 from time import sleep
 
+import django_filters
 from django.conf import settings
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
@@ -8,6 +10,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.cache import cache
+from django.db import transaction
 from django.forms import model_to_dict
 from django.utils.decorators import method_decorator
 from django.utils.encoding import force_bytes
@@ -233,6 +236,27 @@ class AddStudentByNameView(View):
         return HttpResponse('Student {} have been created'.format(student.name))
 
 class AddNewStudentView(CreateView):
+
+    # def get(self, request):
+    #
+    #     student_form = StudentForm()
+    #     context = {
+    #         'form': student_form,
+    #     }
+    #
+    #     return render(
+    #         request=request,
+    #         template_name='student_form.html',
+    #         context=context
+    #     )
+    #
+    # def post(self, request):
+    #
+    #     student_form = StudentForm(request.POST)
+    #     if student_form.is_valid():
+    #         student_form.save()
+    #
+    #     return redirect(reverse('class_student_list'))
 
     model = Student
     fields = ['name', 'surname', 'age', 'gender', 'email', 'picture']
@@ -493,16 +517,53 @@ class StudentAPIView(View):
                 'id', 'name', 'surname', 'age', 'gender', 'email'
             ))
         })
+
+# class StudentFilter(django_filters.FilterSet):
+#
+#     class Meta:
+#         model = Student
+#         fields = ('teachers__name',)
+
 class StudentViewSet(ModelViewSet):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
     pagination_class = StudentPagination
-    # filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
+    filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
     """
         filter_backends можно прописать здесь или же в settings для всех  и тогда просто для использования
          указывать по каким полям фильтровать,  при использовании filters.OrderingFilter аналогично
     """
     filterset_fields = ('name',)
+    # filter_class = StudentFilter
+
+    def create(self, request, *args, **kwargs):
+        # Получаем данные из запроса
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        validated_data = serializer.validated_data
+
+        # Используем транзакцию для сохранения данных
+        try:
+            with transaction.atomic():
+                # Создаем зачетку для студента
+                new_book = Book.objects.create(title=uuid.uuid4())
+
+                # Создаем студента и связываем с зачеткой
+                student = Student.objects.create(
+                    name=validated_data['name'],
+                    surname=validated_data['surname'],
+                    age=validated_data['age'],
+                    gender=validated_data['gender'],
+                    email=validated_data['email'],
+                    # Другие поля студента
+                    book=new_book
+                )
+
+                # Если все успешно, возвращаем статус 201 Created
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            # Если произошла ошибка, откатываем транзакцию
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     # def get_serializer(self):
     #     if self.request.method == 'GET':
@@ -522,18 +583,19 @@ class StudentViewSet(ModelViewSet):
 class SubjectViewSet(ModelViewSet):
     queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
-    filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
+    # filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
     filterset_fields = ('title',)
 
 class TeacherViewSet(ModelViewSet):
     queryset = Teacher.objects.all()
     serializer_class = TeacherSerializer
-    filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
+    # filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
     filterset_fields = ('name',)
 
 class BookViewSet(ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
+    # filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
     filterset_fields = ('title',)
+
 
