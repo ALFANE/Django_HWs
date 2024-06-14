@@ -30,8 +30,7 @@ from home.views_class import ShowAllView, AddNewStudentView, UpdateStudentView, 
     DeleteStudentFromSubjectView, AddStudentToSubjectView, ShowTeacherView, DeleteTeacherView, UpdateTeacherView, \
     DeleteStudentFromTeacher, AddStudentToTeacher, XMLView, JSONView, CSVView, FileView, SendMailview, StartPage, \
     SignUpView, ActivateView, SignOutView, SignInView, StudentAPIView, StudentViewSet, SubjectViewSet, TeacherViewSet, \
-    BookViewSet
-
+    BookViewSet, CustomAPIViewSet
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -52,6 +51,7 @@ router.register(r'students/viewset', StudentViewSet, basename='students_api_view
 router.register(r'subjects/viewset', SubjectViewSet, basename='subjects_api_viewset')
 router.register(r'teachers/viewset', TeacherViewSet, basename='teachers_api_viewset')
 router.register(r'books/viewset', BookViewSet, basename='books_api_viewset')
+router.register(r'custom', CustomAPIViewSet, basename='custom')
 
 
 urlpatterns = [

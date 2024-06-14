@@ -8,12 +8,12 @@ class StudentSerializer(serializers.ModelSerializer):
     subject_title = serializers.CharField(source='subject.title', read_only=True)
     class Meta:
         model = Student
-        fields = ['id', 'name', 'surname', 'age', 'gender', 'email', 'subject_title', 'picture']
+        fields = ['id', 'name', 'surname', 'age', 'gender', 'email', 'subject_title', 'picture', 'created_at', 'updated_at']
 
 class SubjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subject
-        fields = ['id', 'title']
+        fields = ['id', 'title', 'created_at', 'updated_at']
 
 class TeacherSerializer(serializers.ModelSerializer):
 
@@ -32,9 +32,9 @@ class TeacherSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Teacher
-        fields = ['id', 'name', 'students']
+        fields = ['id', 'name', 'students', 'created_at', 'updated_at']
 
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
-        fields = ['id', 'title']
+        fields = ['id', 'title', 'created_at', 'updated_at']

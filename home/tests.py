@@ -1,6 +1,7 @@
 import uuid
-from unittest import skip
+from unittest import skip, mock
 
+import freezegun
 from django.test import TestCase
 from faker import Faker
 from rest_framework import status
@@ -37,6 +38,7 @@ from rest_framework.test import APITestCase
 #         response = self.client.get(reverse('teachers_api_viewset-list'))
 #         self.assertEqual(response.json(), {'count': 0, 'next': None, 'previous': None, 'results': []})
 
+@freezegun.freeze_time('1991-02-20 00:00:00')
 class StudentApiTests(APITestCase):
 
     def setUp(self):
@@ -106,6 +108,7 @@ class StudentApiTests(APITestCase):
         students = Student.objects.all()
         self.assertEqual(students.count(), 0)
 
+@freezegun.freeze_time('1991-02-20 00:00:00')
 class SubjectApiTests(APITestCase):
 
     def setUp(self):
@@ -135,6 +138,7 @@ class SubjectApiTests(APITestCase):
         subject_data = response_data['results'][0]
         self.assertEqual(subject_data['id'], self.subject_id)
         self.assertEqual(subject_data['title'], Subject.objects.get(id=self.subject_id).title)
+
     def test_update_subject(self):
 
         subject = Subject.objects.get(id=self.subject_id)
@@ -155,7 +159,7 @@ class SubjectApiTests(APITestCase):
         self.assertEqual(subjects.count(), 0)
 
 
-
+@freezegun.freeze_time('1991-02-20 00:00:00')
 class TeacherApiTests(APITestCase):
 
     def setUp(self):
@@ -204,6 +208,7 @@ class TeacherApiTests(APITestCase):
         teachers = Teacher.objects.all()
         self.assertEqual(teachers.count(), 0)
 
+@freezegun.freeze_time('1991-02-20 00:00:00')
 class BookApiTests(APITestCase):
 
     def setUp(self):
@@ -251,3 +256,12 @@ class BookApiTests(APITestCase):
 
         books = Book.objects.all()
         self.assertEqual(books.count(), 0)
+
+@freezegun.freeze_time('1991-02-20 00:00:00')
+class CustomAPITests(APITestCase):
+
+    @mock.patch('app.utils.send_student_email')
+    def test_get_custom_list(self, mock_o):
+
+        response = self.client.get(reverse('custom-list'))
+        self.assertEqual(response.json(), {'status': 'OK'})

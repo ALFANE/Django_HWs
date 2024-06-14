@@ -26,9 +26,11 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, filters
 from rest_framework.pagination import LimitOffsetPagination, PageNumberPagination
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
 
+from app import utils
 from app.celery import test_task_celery
+from app.utils import send_student_email
 from home.emails import send_email
 from home.paginations import StudentPagination
 from home.serializers import StudentSerializer, SubjectSerializer, TeacherSerializer, BookSerializer
@@ -598,5 +600,12 @@ class BookViewSet(ModelViewSet):
     # filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
     filterset_fields = ('title',)
 
+class CustomAPIViewSet(GenericViewSet):
+
+    def list(self, request):
+
+        utils.send_student_email()
+
+        return Response({'status': 'OK'})
 
 
