@@ -18,6 +18,8 @@ class Student(models.Model):
     social_url = models.URLField(null=True)
     is_active = models.CharField(max_length=20, null=True)
     picture = models.ImageField(upload_to='student_photos/', null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
     subject = models.ForeignKey(
         to = 'home.Subject',
         on_delete=models.SET_NULL,
@@ -36,14 +38,20 @@ class Student(models.Model):
 class Subject(models.Model):
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=200)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
 
 class Book(models.Model):
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=200)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
 
 class Teacher(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
     students = models.ManyToManyField(
         to = 'home.Student',
         related_name = 'teachers',

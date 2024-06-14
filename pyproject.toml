@@ -23,6 +23,8 @@ drf-yasg = "^1.21.7"
 django-filter = "^24.2"
 pytest = "^8.2.1"
 pytest-django = "^4.8.0"
+freezegun = "^1.5.1"
+coverage = "^7.5.3"
 
 
 [tool.poetry.group.dev.dependencies]
