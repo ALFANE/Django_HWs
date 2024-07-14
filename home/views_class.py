@@ -144,7 +144,7 @@ class SignOutView(View):
         print(request.user)
         return redirect(reverse('start_page'))
 
-@method_decorator(cache_page(settings.CACHE_TTL), name='dispatch')
+# @method_decorator(cache_page(settings.CACHE_TTL), name='dispatch')
 class ShowAllView(View):
 
     def get(self, request):
